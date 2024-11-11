@@ -21,45 +21,44 @@ enum RequestType {
 
 struct ClientInfo {
 	int id;
-	char name[16];
-	int x, y;
+	SOCKET clientSocket;
 };
 
-struct ClientRequest {
+struct QueueBasket {
 	RequestType requestType;
 	SOCKET clientSocket;
 	char clientName[16];
 };
 
 // std::queue를 std::deque로 변경
-extern std::deque<ClientRequest> requestQueue;  // requestQueue를 std::deque로 선언
+extern std::deque<QueueBasket> requestQueue;  // requestQueue를 std::deque로 선언
 extern CRITICAL_SECTION cs;
 extern std::vector<ClientInfo> clientInfos;
 
 // 소켓 함수 오류 출력 후 종료
-void err_quit(const char *msg)
+void err_quit(const char* msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessageA(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, WSAGetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(char *)&lpMsgBuf, 0, NULL);
-	MessageBoxA(NULL, (const char *)lpMsgBuf, msg, MB_ICONERROR);
+		(char*)&lpMsgBuf, 0, NULL);
+	MessageBoxA(NULL, (const char*)lpMsgBuf, msg, MB_ICONERROR);
 	LocalFree(lpMsgBuf);
 	exit(1);
 }
 
 // 소켓 함수 오류 출력
-void err_display(const char *msg)
+void err_display(const char* msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessageA(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, WSAGetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(char *)&lpMsgBuf, 0, NULL);
-	printf("[%s] %s\n", msg, (char *)lpMsgBuf);
+		(char*)&lpMsgBuf, 0, NULL);
+	printf("[%s] %s\n", msg, (char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
 
@@ -71,7 +70,7 @@ void err_display(int errcode)
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, errcode,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(char *)&lpMsgBuf, 0, NULL);
-	printf("[오류] %s\n", (char *)lpMsgBuf);
+		(char*)&lpMsgBuf, 0, NULL);
+	printf("[오류] %s\n", (char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
